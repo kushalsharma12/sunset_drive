@@ -1,13 +1,88 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sunset_drive</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Sunset Drive</title>
+</head>
+
+<body>
+  <!-- Vehicle & Environment Selector -->
+  <div id="vehicle-selector" class="selector-overlay">
+    <div class="selector-container">
+      <h1 class="main-title">Sunset Drive</h1>
+
+      <!-- Vehicle Selection -->
+      <section class="selection-section">
+        <h2 class="section-heading">Choose Your Vehicle</h2>
+        <div class="cards-grid">
+          <div class="selection-card" data-vehicle="CarA">
+            <div class="card-icon">🚗</div>
+            <h3 class="card-title">Classic Car</h3>
+            <button class="card-button">Select Vehicle</button>
+          </div>
+          <div class="selection-card" data-vehicle="CarB">
+            <div class="card-icon">🏎️</div>
+            <h3 class="card-title">Sport Car</h3>
+            <button class="card-button">Select Vehicle</button>
+          </div>
+          <div class="selection-card" data-vehicle="SUV">
+            <div class="card-icon">🚙</div>
+            <h3 class="card-title">SUV</h3>
+            <button class="card-button">Select Vehicle</button>
+          </div>
+          <div class="selection-card" data-vehicle="Bike">
+            <div class="card-icon">🏍️</div>
+            <h3 class="card-title">Bike</h3>
+            <button class="card-button">Select Vehicle</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Environment Selection -->
+      <section class="selection-section">
+        <h2 class="section-heading">Choose Your Environment</h2>
+        <div class="cards-grid environment-grid">
+          <div class="selection-card selected" data-environment="sunset">
+            <div class="card-icon">🌅</div>
+            <h3 class="card-title">Sunset Highway</h3>
+            <button class="card-button">Select Environment</button>
+          </div>
+          <div class="selection-card" data-environment="desert">
+            <div class="card-icon">🏜️</div>
+            <h3 class="card-title">Desert Sunrise</h3>
+            <button class="card-button">Select Environment</button>
+          </div>
+          <div class="selection-card" data-environment="mountains">
+            <div class="card-icon">🏔️</div>
+            <h3 class="card-title">Mountain Afternoon</h3>
+            <button class="card-button">Select Environment</button>
+          </div>
+          <div class="selection-card" data-environment="beach">
+            <div class="card-icon">🏖️</div>
+            <h3 class="card-title">Beach Sunset</h3>
+            <button class="card-button">Select Environment</button>
+          </div>
+          <div class="selection-card" data-environment="night">
+            <div class="card-icon">🌙</div>
+            <h3 class="card-title">Night Highway</h3>
+            <button class="card-button">Select Environment</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Start Game Button -->
+      <button id="start-game-btn" class="start-game-button" disabled>Start Game</button>
+    </div>
+  </div>
+
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>
