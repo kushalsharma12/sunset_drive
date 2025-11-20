@@ -7,7 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
   <title>Sunset Drive</title>
 </head>
 
@@ -15,12 +16,15 @@
   <!-- Vehicle & Environment Selector -->
   <div id="vehicle-selector" class="selector-overlay">
     <div class="selector-container">
-      <h1 class="main-title">Sunset Drive</h1>
+      <div class="header">
+        <h1 class="main-title">Sunset Drive</h1>
+        <p class="subtitle">Choose a vehicle & environment — then press Start Game</p>
+      </div>
 
       <!-- Vehicle Selection -->
       <section class="selection-section">
         <h2 class="section-heading">Choose Your Vehicle</h2>
-        <div class="cards-grid">
+        <div class="cards-grid vehicle-grid">
           <div class="selection-card" data-vehicle="CarA">
             <div class="card-icon">🚗</div>
             <h3 class="card-title">Classic Car</h3>
@@ -51,7 +55,7 @@
           <div class="selection-card selected" data-environment="sunset">
             <div class="card-icon">🌅</div>
             <h3 class="card-title">Sunset Highway</h3>
-            <button class="card-button">Select Environment</button>
+            <button class="card-button selected">Select Environment</button>
           </div>
           <div class="selection-card" data-environment="desert">
             <div class="card-icon">🏜️</div>

@@ -241,11 +241,17 @@ function initVehicleSelector() {
     card.addEventListener('click', () => {
       selectedVehicle = card.dataset.vehicle;
 
-      // Remove selected class from all vehicle cards
-      vehicleCards.forEach(c => c.classList.remove('selected'));
+      // Remove selected class from all vehicle cards and buttons
+      vehicleCards.forEach(c => {
+        c.classList.remove('selected');
+        const btn = c.querySelector('.card-button');
+        if (btn) btn.classList.remove('selected');
+      });
 
-      // Add selected class to clicked card
+      // Add selected class to clicked card and button
       card.classList.add('selected');
+      const btn = card.querySelector('.card-button');
+      if (btn) btn.classList.add('selected');
 
       // Enable start button
       checkStartButton();
@@ -257,11 +263,17 @@ function initVehicleSelector() {
     card.addEventListener('click', () => {
       selectedEnvironment = card.dataset.environment;
 
-      // Remove selected class from all environment cards
-      environmentCards.forEach(c => c.classList.remove('selected'));
+      // Remove selected class from all environment cards and buttons
+      environmentCards.forEach(c => {
+        c.classList.remove('selected');
+        const btn = c.querySelector('.card-button');
+        if (btn) btn.classList.remove('selected');
+      });
 
-      // Add selected class to clicked card
+      // Add selected class to clicked card and button
       card.classList.add('selected');
+      const btn = card.querySelector('.card-button');
+      if (btn) btn.classList.add('selected');
     });
   });
 
