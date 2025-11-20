@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #2b1055, #7597de); /* Fallback gradient */
+  font-family: 'Inter', sans-serif;
+}
+
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+#ui {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: white;
+  pointer-events: none;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
