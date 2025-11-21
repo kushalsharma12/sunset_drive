@@ -201,72 +201,124 @@ export class Environment {
     }
 
     prepareProps() {
-        // Tree
-        this.treeGeo = new THREE.Group();
+        // We will use InstancedMesh for performance
+        // 1. Tree Trunk
+        const trunkGeo = new THREE.CylinderGeometry(0.3, 0.4, 2, 8);
+        trunkGeo.translate(0, 1, 0); // Pivot at bottom
+        const trunkMat = new THREE.MeshStandardMaterial({ color: this.profile.propColors.trunk });
 
-        const trunk = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.3, 0.4, 2, 8),
-            new THREE.MeshStandardMaterial({ color: this.profile.propColors.trunk })
-        );
-        trunk.position.y = 1;
-        trunk.castShadow = true;
-        this.treeGeo.add(trunk);
+        // 2. Tree Leaves
+        const leavesGeo = new THREE.ConeGeometry(2.1, 4.5, 8);
+        leavesGeo.translate(0, 3.25, 0); // Position relative to trunk
+        const leavesMat = new THREE.MeshStandardMaterial({ color: this.profile.propColors.leaves });
 
-        const leaves = new THREE.Mesh(
-            new THREE.ConeGeometry(2.1, 4.5, 8),
-            new THREE.MeshStandardMaterial({ color: this.profile.propColors.leaves })
-        );
-        leaves.position.y = 3.25;
-        leaves.castShadow = true;
-        this.treeGeo.add(leaves);
+        // 3. Bush
+        const bushGeo = new THREE.DodecahedronGeometry(0.9);
+        bushGeo.translate(0, 0.45, 0); // Pivot at bottom
+        const bushMat = new THREE.MeshStandardMaterial({ color: this.profile.propColors.bush });
 
-        // Bush
-        this.bushGeo = new THREE.Mesh(
-            new THREE.DodecahedronGeometry(0.9),
-            new THREE.MeshStandardMaterial({ color: this.profile.propColors.bush })
-        );
-        this.bushGeo.castShadow = true;
+        // Max counts
+        this.maxTrees = 70;
+        this.maxBushes = 30;
+
+        this.treeTrunksMesh = new THREE.InstancedMesh(trunkGeo, trunkMat, this.maxTrees);
+        this.treeLeavesMesh = new THREE.InstancedMesh(leavesGeo, leavesMat, this.maxTrees);
+        this.bushesMesh = new THREE.InstancedMesh(bushGeo, bushMat, this.maxBushes);
+
+        this.treeTrunksMesh.castShadow = true;
+        this.treeLeavesMesh.castShadow = true;
+        this.bushesMesh.castShadow = true;
+
+        this.scene.add(this.treeTrunksMesh);
+        this.scene.add(this.treeLeavesMesh);
+        this.scene.add(this.bushesMesh);
+
+        // Data storage for logic
+        this.treeProps = [];
+        this.bushProps = [];
+
+        // Dummy object for matrix calculation
+        this.dummy = new THREE.Object3D();
     }
 
     spawnProps() {
-        for (let i = 0; i < 90; i++) {
-            const type = Math.random();
-            let prop;
-
-            if (type < 0.7) {
-                prop = this.treeGeo.clone();
-            } else {
-                prop = this.bushGeo.clone();
-                prop.position.y = 0.45;
-            }
-
-            prop.position.z = -Math.random() * 450;
-
-            const side = Math.random() > 0.5 ? 1 : -1;
-            const dist = 12 + Math.random() * 35;
-
-            prop.position.x = side * dist;
-            prop.rotation.y = Math.random() * Math.PI * 2;
-
-            const s = 0.85 + Math.random() * 0.4;
-            prop.scale.set(s, s, s);
-
-            this.scene.add(prop);
-            this.props.push(prop);
+        // Spawn Trees
+        for (let i = 0; i < this.maxTrees; i++) {
+            const prop = {
+                x: 0, z: 0, s: 1, r: 0
+            };
+            this.resetProp(prop);
+            // Spread them out initially
+            prop.z = -Math.random() * 450;
+            this.treeProps.push(prop);
+            this.updateInstance(this.dummy, prop, i, this.treeTrunksMesh);
+            this.updateInstance(this.dummy, prop, i, this.treeLeavesMesh);
         }
+
+        // Spawn Bushes
+        for (let i = 0; i < this.maxBushes; i++) {
+            const prop = {
+                x: 0, z: 0, s: 1, r: 0
+            };
+            this.resetProp(prop);
+            prop.z = -Math.random() * 450;
+            this.bushProps.push(prop);
+            this.updateInstance(this.dummy, prop, i, this.bushesMesh);
+        }
+    }
+
+    resetProp(prop) {
+        prop.z = -450;
+        const side = Math.random() > 0.5 ? 1 : -1;
+        const dist = 12 + Math.random() * 35;
+        prop.x = side * dist;
+        prop.r = Math.random() * Math.PI * 2;
+        prop.s = 0.85 + Math.random() * 0.4;
+    }
+
+    updateInstance(dummy, prop, index, mesh) {
+        dummy.position.set(prop.x, 0, prop.z);
+        dummy.rotation.y = prop.r;
+        dummy.scale.set(prop.s, prop.s, prop.s);
+        dummy.updateMatrix();
+        mesh.setMatrixAt(index, dummy.matrix);
     }
 
     update(dt, speed) {
         const move = speed * dt;
+        let needsUpdateTrees = false;
+        let needsUpdateBushes = false;
 
-        this.props.forEach(p => {
-            p.position.z += move;
-            if (p.position.z > 25) {
-                p.position.z = -450;
-
-                const side = Math.random() > 0.5 ? 1 : -1;
-                p.position.x = side * (12 + Math.random() * 35);
+        // Update Trees
+        for (let i = 0; i < this.treeProps.length; i++) {
+            const p = this.treeProps[i];
+            p.z += move;
+            if (p.z > 25) {
+                this.resetProp(p);
             }
-        });
+            // Always update matrix because they move every frame
+            this.updateInstance(this.dummy, p, i, this.treeTrunksMesh);
+            this.updateInstance(this.dummy, p, i, this.treeLeavesMesh);
+            needsUpdateTrees = true;
+        }
+
+        // Update Bushes
+        for (let i = 0; i < this.bushProps.length; i++) {
+            const p = this.bushProps[i];
+            p.z += move;
+            if (p.z > 25) {
+                this.resetProp(p);
+            }
+            this.updateInstance(this.dummy, p, i, this.bushesMesh);
+            needsUpdateBushes = true;
+        }
+
+        if (needsUpdateTrees) {
+            this.treeTrunksMesh.instanceMatrix.needsUpdate = true;
+            this.treeLeavesMesh.instanceMatrix.needsUpdate = true;
+        }
+        if (needsUpdateBushes) {
+            this.bushesMesh.instanceMatrix.needsUpdate = true;
+        }
     }
 }
